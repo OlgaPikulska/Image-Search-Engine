@@ -4,35 +4,97 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 const searchInput = document.querySelector("input");
 const searchBtn = document.querySelector("button");
 const searchForm = document.querySelector("#search-form")
-console.log(searchBtn)
+const gallery = document.querySelector(".gallery");
+console.log(gallery)
 
 searchForm.addEventListener("submit", handleSubmit);
 
 function handleSubmit(e) {
-    e.preventDefault();
-    const inputValue = e.currentTarget.value;
-    console.log(inputValue);
+  e.preventDefault();
+  const inputValue = e.currentTarget.value;
+  const searchQ = searchInput.value
+  console.log(inputValue);
+  console.log(searchQ)
+  getImages(searchQ)
+  .then(friends => console.log(friends))
+  .catch(error => console.error(error));
+}
 
-    axios.get('https://pixabay.com/api/', {
-    params: {
-        key:"31759222-00acf71bf0a65e43bd085eba1",
-        q:"${inputValue}",
+async function getImages(inputValue) {
+  try {
+    const response = await axios.get('https://pixabay.com/api/', {
+      params: {
+        key: "31759222-00acf71bf0a65e43bd085eba1",
+        q: `${inputValue}`,
         image_type: "photo",
         orientattion: "horizontal",
-        safesearch:true,
-    }
-  })
-    .then(function (response) {
-    console.log(typeof response)
+        safesearch: true,
+      }
+    });
     console.log(response);
-  })
-  .catch(function (error) {
-    console.log(error);
-  })
-  .then(function () {
-    // always executed
-  });  
+    const hits = response.data.hits
+    console.log(hits);
+    renderImage(hits);
+    
+  } catch (error) {
+    console.error(error);
+  }
 }
+
+
+
+function renderImage(hits) {
+  gallery.innerHTML = null;
+  const markup = hits.map((hit) => {
+    const markupText = `<div class="photo-card">
+    <img src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy" />
+    <div class="info">
+    <p class="info-item">
+    <b>Likes ${hit.likes}</b>
+    </p>
+    <p class="info-item">
+      <b>Views ${hit.views}</b>
+    </p>
+    <p class="info-item">
+      <b>Comments ${hit.comments}</b>
+    </p>
+    <p class="info-item">
+      <b>Downloads ${hit.downloads}</b>
+    </p>
+  </div>
+    </div>`
+    return markupText
+  }).join("");
+  // nie mam pojęcia, czy będzie jakieś undefined//
+  const markupReplaced = markup.replaceAll("undefined", "")
+  gallery.innerHTML = markupReplaced;
+}
+
+
+
+
+
+
+//     axios.get('https://pixabay.com/api/', {
+//     params: {
+//         key:"31759222-00acf71bf0a65e43bd085eba1",
+//         q:"${searchQ}",
+//         image_type: "photo",
+//         orientattion: "horizontal",
+//         safesearch:true,
+//     }
+//   })
+//     .then(function (response) {
+//     console.log(typeof response)
+//     console.log(response);
+//     })
+//   .catch(function (error) {
+//     console.log(error);
+//   })
+//   .then(function () {
+//     // always executed
+//   });  
+// }
 
 // searchInput.addEventListener("input", (e) => {
 // let inputValue = e.currentTarget.value
