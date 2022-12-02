@@ -27,7 +27,7 @@ async function getImages(inputValue) {
         key: "31759222-00acf71bf0a65e43bd085eba1",
         q: `${inputValue}`,
         image_type: "photo",
-        orientattion: "horizontal",
+        orientation: "horizontal",
         safesearch: true,
       }
     });
@@ -47,19 +47,19 @@ function renderImage(hits) {
   gallery.innerHTML = null;
   const markup = hits.map((hit) => {
     const markupText = `<div class="photo-card">
-    <img src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy" />
+    <img src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy" class="photo-card__item"/>
     <div class="info">
     <p class="info-item">
-    <b>Likes ${hit.likes}</b>
+    <b>Likes</b> ${hit.likes}
     </p>
     <p class="info-item">
-      <b>Views ${hit.views}</b>
+      <b>Views</b> ${hit.views}
     </p>
     <p class="info-item">
-      <b>Comments ${hit.comments}</b>
+      <b>Comments</b> ${hit.comments}
     </p>
     <p class="info-item">
-      <b>Downloads ${hit.downloads}</b>
+      <b>Downloads</b> ${hit.downloads}
     </p>
   </div>
     </div>`
