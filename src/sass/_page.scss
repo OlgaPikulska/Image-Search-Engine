@@ -11,6 +11,9 @@
   outline: none;
 }
 
+html {
+  scroll-behavior: smooth;
+}
 // --- search-form --- //
 .search-form {
   position: fixed;

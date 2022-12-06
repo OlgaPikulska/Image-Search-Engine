@@ -10,6 +10,7 @@ const searchForm = document.querySelector("#search-form")
 const gallery = document.querySelector(".gallery");
 const loadMore = document.querySelector(".load-more")
 
+
 //loadMore.setAttribute("hidden","")
 
 let page = 1;
@@ -38,10 +39,10 @@ async function getImages(inputValue) {
         per_page: 40,
       }
     });
-    console.log(response);
-    console.log(response.request.responseURL);
+    //console.log(response);
+    //console.log(response.request.responseURL);
     const hits = response.data.hits
-    console.log(hits)
+    //console.log(hits)
     if (hits.length === 0) {
       Notify.failure("Sorry, there are no images matching your search query. Please try again.")
     } else if (page === 1) {
@@ -51,12 +52,14 @@ async function getImages(inputValue) {
     
     const totalHits = response.data.totalHits;
     const numberOfPages = Math.ceil(totalHits / 40);
-    console.log(numberOfPages)
+    //console.log(numberOfPages)
     
     if (page  === numberOfPages) {
-      loadMore.setAttribute("hidden", "")
+      //loadMore.setAttribute("hidden", "")
       Notify.failure("We're sorry, but you've reached the end of search results.")
     }
+    
+    observer.observe(document.querySelector(".load-more__box"));
   } catch (error) {
     console.error(error);
   }
@@ -84,27 +87,35 @@ function renderImage(hits) {
     return markupText;
   }).join("");
   gallery.insertAdjacentHTML("beforeend", markup)
-  loadMore.removeAttribute("hidden")
+  //loadMore.removeAttribute("hidden")
   let lightbox = new SimpleLightbox(".gallery a")
   lightbox.refresh();
+
 }
 
-loadMore.addEventListener("click", handleClick);
+// --- przycisk załaduj więcej --- //
 
-function handleClick() {
+// loadMore.addEventListener("click", handleClick);
+
+// function handleClick() {
+//   const searchQ = searchInput.value
+//   page += 1;
+//   getImages(searchQ);
+// }
+
+// --- nieskończone przewijanie ---//
+
+const observer = new IntersectionObserver(([entry]) => {
+  console.log(entry);
   const searchQ = searchInput.value
+  console.log(searchQ)
+  if (!entry.isIntersecting) return;
   page += 1;
   getImages(searchQ);
-
-  // sprawdzić czy to wgl działa 
-  const { height: cardHeight } = gallery
-  .firstElementChild.getBoundingClientRect();
-
-  window.scrollBy({
-  top: cardHeight * 2,
-  behavior: "smooth",
-});
-}
+  console.log(`Loaded images from page:${page-1}`)
+  
+})
 
 
 // ZOSTAŁO: przewijanie strony i nieskończone przewijanie i poprawić I'm sorry you've reach
+
