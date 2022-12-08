@@ -7,7 +7,6 @@ const searchInput = document.querySelector("input");
 const searchForm = document.querySelector("#search-form")
 const gallery = document.querySelector(".gallery");
 //const loadMore = document.querySelector(".load-more")
-//const changeBtn = document.querySelector(".change__btn");
 
 let page = 1;
 
@@ -19,7 +18,9 @@ function handleSubmit(e) {
   page = 1;
   const searchQ = searchInput.value
   getImages(searchQ)
-  
+  console.log("od nowa", page)
+  endObserver.unobserve(document.querySelector(".load-more__box"));
+  observer.unobserve(document.querySelector(".load-more__box"));
 }
 
 async function getImages(inputValue) {
@@ -31,30 +32,33 @@ async function getImages(inputValue) {
         image_type: "photo",
         orientation: "horizontal",
         safesearch: true,
-        page: page,
+        page,
         per_page: 40,
       }
     });
-    
-    const hits = response.data.hits
-    if (hits.length === 0) {
-      Notify.failure("Sorry, there are no images matching your search query. Please try again.")
-    } else if (page === 1) {
-      Notify.success(`Hooray! We found ${response.data.totalHits} images.`)
-    }
-
-    renderImage(hits);
- 
+   
     const totalHits = response.data.totalHits;
     const numberOfPages = Math.ceil(totalHits / 40);
+
+    const hits = response.data.hits
     
-    if (page  === numberOfPages) {
-      //loadMore.setAttribute("hidden", "")
-      Notify.failure("We're sorry, but you've reached the end of search results.")
+    if (totalHits === 0) {
+      Notify.failure("Sorry, there are no images matching your search query. Please try again.")
+    } else if (page === 1) {
+      Notify.success(`Hooray! We found ${totalHits} images.`)
     }
-    
-    observer.observe(document.querySelector(".load-more__box"));
-  
+
+    if (numberOfPages > 1) {
+      observer.observe(document.querySelector(".load-more__box"));
+      endObserver.unobserve(document.querySelector(".load-more__box"));
+    } 
+
+    if (page === numberOfPages) {
+      //loadMore.setAttribute("hidden", "")
+      observer.unobserve(document.querySelector(".load-more__box"));
+      endObserver.observe(document.querySelector(".load-more__box"));
+    } 
+    renderImage(hits);
   } catch (error) {
     console.error(error);
   }
@@ -88,14 +92,28 @@ function renderImage(hits) {
 }
 
 // --- nieskończone przewijanie ---//
-  const observer = new IntersectionObserver(([entry]) => {
-        console.log(entry);
-    if (!entry.isIntersecting) return;
-  
-      const searchQ = searchInput.value
+
+ let observer = new IntersectionObserver(([entry]) => {
+        console.log("Infinite",entry);
+   if (!entry.isIntersecting) return;
+     const searchQ = searchInput.value
       page += 1;   
-      getImages(searchQ)      
-  })
+      getImages(searchQ);
+      
+  }) 
+
+
+// --- powiadomienie o braku dalszych wyszukiwań dopiero pod koniec scrollowania --- //
+
+let endObserver = new IntersectionObserver(([entry]) => {
+  console.log("Koniec",entry);
+  if (entry.isIntersecting) {
+    console.log("koniec strony~powiadomienie",entry.isIntersecting);
+      Notify.failure("We're sorry, but you've reached the end of search results.")
+  } else {
+    return;
+    }
+}) 
 
 // --- przycisk załaduj więcej --- //
 
@@ -114,7 +132,7 @@ function renderImage(hits) {
 
 
 
-// --- NIEUDANA zmiana sposobu przewijania z infinite scroll na klikanie poprzez przycisk --- //
+// --- próba zmiany sposobu przewijania z infinite scroll na klikanie poprzez przycisk --- //
 
 // changeBtn.addEventListener("click", () => {
 //       console.log(loadMore.hasAttribute("hidden"))
@@ -129,4 +147,3 @@ function renderImage(hits) {
 //     console.log("infinite_scroll")
 //   }
 
-    
