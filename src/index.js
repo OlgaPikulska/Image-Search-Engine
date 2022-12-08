@@ -3,15 +3,11 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 
-//czy wszystkie funkcje powinny być async/await?
-
 const searchInput = document.querySelector("input");
 const searchForm = document.querySelector("#search-form")
 const gallery = document.querySelector(".gallery");
-const loadMore = document.querySelector(".load-more")
-
-
-//loadMore.setAttribute("hidden","")
+//const loadMore = document.querySelector(".load-more")
+//const changeBtn = document.querySelector(".change__btn");
 
 let page = 1;
 
@@ -39,20 +35,18 @@ async function getImages(inputValue) {
         per_page: 40,
       }
     });
-    //console.log(response);
-    //console.log(response.request.responseURL);
+    
     const hits = response.data.hits
-    //console.log(hits)
     if (hits.length === 0) {
       Notify.failure("Sorry, there are no images matching your search query. Please try again.")
     } else if (page === 1) {
       Notify.success(`Hooray! We found ${response.data.totalHits} images.`)
     }
+
     renderImage(hits);
-    
+ 
     const totalHits = response.data.totalHits;
     const numberOfPages = Math.ceil(totalHits / 40);
-    //console.log(numberOfPages)
     
     if (page  === numberOfPages) {
       //loadMore.setAttribute("hidden", "")
@@ -60,6 +54,7 @@ async function getImages(inputValue) {
     }
     
     observer.observe(document.querySelector(".load-more__box"));
+  
   } catch (error) {
     console.error(error);
   }
@@ -90,8 +85,17 @@ function renderImage(hits) {
   //loadMore.removeAttribute("hidden")
   let lightbox = new SimpleLightbox(".gallery a")
   lightbox.refresh();
-
 }
+
+// --- nieskończone przewijanie ---//
+  const observer = new IntersectionObserver(([entry]) => {
+        console.log(entry);
+    if (!entry.isIntersecting) return;
+  
+      const searchQ = searchInput.value
+      page += 1;   
+      getImages(searchQ)      
+  })
 
 // --- przycisk załaduj więcej --- //
 
@@ -103,19 +107,26 @@ function renderImage(hits) {
 //   getImages(searchQ);
 // }
 
-// --- nieskończone przewijanie ---//
-
-const observer = new IntersectionObserver(([entry]) => {
-  console.log(entry);
-  const searchQ = searchInput.value
-  console.log(searchQ)
-  if (!entry.isIntersecting) return;
-  page += 1;
-  getImages(searchQ);
-  console.log(`Loaded images from page:${page-1}`)
-  
-})
 
 
-// ZOSTAŁO: przewijanie strony i nieskończone przewijanie i poprawić I'm sorry you've reach
 
+
+
+
+
+// --- NIEUDANA zmiana sposobu przewijania z infinite scroll na klikanie poprzez przycisk --- //
+
+// changeBtn.addEventListener("click", () => {
+//       console.log(loadMore.hasAttribute("hidden"))
+//       loadMore.toggleAttribute("hidden")});
+
+// if (loadMore.hasAttribute("hidden")) {
+//     observer.unobserve(document.querySelector(".load-more__box"))
+//   console.log("manual")
+//   return;
+//   } else {
+//     observer.observe(document.querySelector(".load-more__box"));
+//     console.log("infinite_scroll")
+//   }
+
+    
