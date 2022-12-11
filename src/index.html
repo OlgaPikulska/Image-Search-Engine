@@ -1,28 +1,31 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Page title</title>
+    <title>Image search engine</title>
     <link rel="stylesheet" href="./css/index.min.css" />
     <script type="module" src="./index.js"></script>
   </head>
   <body>
     <form class="search-form" id="search-form">
       <div class="search-form__box">
-  <input
-    type="text"
-    name="searchQuery"
-    autocomplete="off"
-    placeholder="Search images..."
-    class="search-form__input"
-  />
-  <button type="submit" class="search-form__button">
-    <svg class="search-form__button--icon"><use href="images/symbol-defs.svg#icon-search"></use></svg>
-  </button>
-</div>
-<!-- <button type="button" class="change__btn">CHANGE</button> -->
-</form>
+        <input
+          type="text"
+          name="searchQuery"
+          autocomplete="off"
+          placeholder="Search images..."
+          class="search-form__input"
+        />
+        <button type="submit" class="search-form__button">
+          <svg class="search-form__button--icon"><use href="images/symbol-defs.svg#icon-search"></use></svg>
+        </button>
+      </div>
+      <div class="switch-btn__box"> 
+        <p class="switch-btn__txt">Infinite Scroll</p> 
+        <input type="checkbox" id="switch"/><label for="switch"></label>
+      </div>
+    </form>
 <div class="gallery"></div>
 <div class="load-more__box">
   <button type="button" class="load-more" hidden>Load more</button>

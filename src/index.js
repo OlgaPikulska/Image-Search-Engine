@@ -6,8 +6,9 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const searchInput = document.querySelector("input");
 const searchForm = document.querySelector("#search-form")
 const gallery = document.querySelector(".gallery");
-//const loadMore = document.querySelector(".load-more")
-
+const loadMore = document.querySelector(".load-more");
+const switchBtn = document.querySelector("#switch");
+const switchBtnBox = document.querySelector(".switch-btn__box")
 let page = 1;
 
 searchForm.addEventListener("submit", handleSubmit);
@@ -17,10 +18,16 @@ function handleSubmit(e) {
   e.preventDefault();
   page = 1;
   const searchQ = searchInput.value
-  getImages(searchQ)
-  console.log("od nowa", page)
+
+  if (searchQ.length === 0) {
+    Notify.failure("Please write what you are looking for.")
+  } else  {
+    getImages(searchQ)
+  }
   endObserver.unobserve(document.querySelector(".load-more__box"));
   observer.unobserve(document.querySelector(".load-more__box"));
+  switchBtnBox.classList.replace("is-hidden", "switch-btn__box");
+
 }
 
 async function getImages(inputValue) {
@@ -38,30 +45,56 @@ async function getImages(inputValue) {
     });
    
     const totalHits = response.data.totalHits;
-    const numberOfPages = Math.ceil(totalHits / 40);
+    checkResult(totalHits)
 
     const hits = response.data.hits
-    
-    if (totalHits === 0) {
-      Notify.failure("Sorry, there are no images matching your search query. Please try again.")
-    } else if (page === 1) {
-      Notify.success(`Hooray! We found ${totalHits} images.`)
-    }
-
-    if (numberOfPages > 1) {
-      observer.observe(document.querySelector(".load-more__box"));
-      endObserver.unobserve(document.querySelector(".load-more__box"));
-    } 
-
-    if (page === numberOfPages) {
-      //loadMore.setAttribute("hidden", "")
-      observer.unobserve(document.querySelector(".load-more__box"));
-      endObserver.observe(document.querySelector(".load-more__box"));
-    } 
     renderImage(hits);
   } catch (error) {
     console.error(error);
   }
+}
+
+function checkResult(totalHits) {
+  const numberOfPages = Math.ceil(totalHits / 40);
+ 
+  if (totalHits === 0) {
+    Notify.failure("Sorry, there are no images matching your search query. Please try again.")
+  } else if (page === 1) {
+    Notify.success(`Hooray! We found ${totalHits} images.`)
+  }
+  endObserverToggle(numberOfPages);
+  checkSwitchStatus(numberOfPages);
+}
+
+
+function checkSwitchStatus(numberOfPages) {
+    
+   if (switchStatus === true) {
+    if (numberOfPages > 1) {
+      observer.observe(document.querySelector(".load-more__box"));
+     }
+     if (page === numberOfPages) {
+      switchBtnBox.classList.replace("switch-btn__box","is-hidden");
+     }
+  } else if (switchStatus === false) {
+    if (numberOfPages > 1) {
+      loadMore.removeAttribute("hidden")
+    }
+    if (page === numberOfPages) { 
+      loadMore.setAttribute("hidden", "")
+      switchBtnBox.classList.replace("switch-btn__box","is-hidden");
+    }
+  }
+}
+
+function endObserverToggle(numberOfPages) {
+  if (numberOfPages > 1) {
+    endObserver.unobserve(document.querySelector(".load-more__box"));
+  }
+  
+  if (page === numberOfPages) {
+    endObserver.observe(document.querySelector(".load-more__box"));
+  } 
 }
 
 function renderImage(hits) {
@@ -86,29 +119,30 @@ function renderImage(hits) {
     return markupText;
   }).join("");
   gallery.insertAdjacentHTML("beforeend", markup)
-  //loadMore.removeAttribute("hidden")
   let lightbox = new SimpleLightbox(".gallery a")
   lightbox.refresh();
 }
 
 // --- nieskończone przewijanie ---//
 
- let observer = new IntersectionObserver(([entry]) => {
-        console.log("Infinite",entry);
-   if (!entry.isIntersecting) return;
-     const searchQ = searchInput.value
-      page += 1;   
-      getImages(searchQ);
-      
+let observer = new IntersectionObserver(([entry]) => {
+  const searchQ = searchInput.value
+
+  if (searchQ.length === 0) {
+    Notify.failure("Please write what you are looking for.")
+    return;
+  }
+  
+  if (!entry.isIntersecting) return;
+    page += 1;   
+    getImages(searchQ);   
   }) 
 
 
 // --- powiadomienie o braku dalszych wyszukiwań dopiero pod koniec scrollowania --- //
 
 let endObserver = new IntersectionObserver(([entry]) => {
-  console.log("Koniec",entry);
   if (entry.isIntersecting) {
-    console.log("koniec strony~powiadomienie",entry.isIntersecting);
       Notify.failure("We're sorry, but you've reached the end of search results.")
   } else {
     return;
@@ -117,33 +151,34 @@ let endObserver = new IntersectionObserver(([entry]) => {
 
 // --- przycisk załaduj więcej --- //
 
-// loadMore.addEventListener("click", handleClick);
+loadMore.addEventListener("click", handleClick);
 
-// function handleClick() {
-//   const searchQ = searchInput.value
-//   page += 1;
-//   getImages(searchQ);
-// }
+function handleClick() {
+  const searchQ = searchInput.value
+  page += 1;
+  getImages(searchQ);
+}
 
+// --- zmiana sposobu ładowania --- //
+let switchStatus = false;
 
+switchBtn.addEventListener("click", generalInfiniteScroll)
 
-
-
-
-
-
-// --- próba zmiany sposobu przewijania z infinite scroll na klikanie poprzez przycisk --- //
-
-// changeBtn.addEventListener("click", () => {
-//       console.log(loadMore.hasAttribute("hidden"))
-//       loadMore.toggleAttribute("hidden")});
-
-// if (loadMore.hasAttribute("hidden")) {
-//     observer.unobserve(document.querySelector(".load-more__box"))
-//   console.log("manual")
-//   return;
-//   } else {
-//     observer.observe(document.querySelector(".load-more__box"));
-//     console.log("infinite_scroll")
-//   }
-
+function generalInfiniteScroll() {
+  const searchQ = searchInput.value
+  console.log(searchQ.length)
+  if (switchBtn.checked === true) {
+    Notify.success("Infinite scroll is on")
+    switchStatus = true;
+    loadMore.setAttribute("hidden", "")
+    observer.observe(document.querySelector(".load-more__box"));
+  } else {
+    Notify.failure("infinite scroll is off")
+    switchStatus = false;
+    observer.unobserve(document.querySelector(".load-more__box"));
+    if (searchQ.length > 0) {
+      loadMore.removeAttribute("hidden")
+    }
+  }
+  console.log("After click",switchStatus)
+}
