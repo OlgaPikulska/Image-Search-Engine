@@ -49,8 +49,8 @@
 .search-form__input {
   border-radius: 8px 0px 0px 8px;
   width: 350px;
-  padding-top: 8px;
-  padding-bottom: 7px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   padding-left: 10px;
 }
 .search-form__button {
