@@ -9,6 +9,8 @@ const gallery = document.querySelector(".gallery");
 const loadMore = document.querySelector(".load-more");
 const switchBtn = document.querySelector("#switch");
 const switchBtnBox = document.querySelector(".switch-btn__box")
+const scrollToTheTopBtn = document.querySelector(".scroll-to-the-top")
+const rootElement = document.documentElement;
 let page = 1;
 
 searchForm.addEventListener("submit", handleSubmit);
@@ -21,13 +23,12 @@ function handleSubmit(e) {
 
   if (searchQ.length === 0) {
     Notify.failure("Please write what you are looking for.")
-  } else  {
+  } else {
     getImages(searchQ)
   }
   endObserver.unobserve(document.querySelector(".load-more__box"));
   observer.unobserve(document.querySelector(".load-more__box"));
   switchBtnBox.classList.replace("is-hidden", "switch-btn__box");
-
 }
 
 async function getImages(inputValue) {
@@ -43,7 +44,7 @@ async function getImages(inputValue) {
         per_page: 40,
       }
     });
-   
+
     const totalHits = response.data.totalHits;
     checkResult(totalHits)
 
@@ -56,7 +57,7 @@ async function getImages(inputValue) {
 
 function checkResult(totalHits) {
   const numberOfPages = Math.ceil(totalHits / 40);
- 
+
   if (totalHits === 0) {
     Notify.failure("Sorry, there are no images matching your search query. Please try again.")
   } else if (page === 1) {
@@ -66,23 +67,22 @@ function checkResult(totalHits) {
   checkSwitchStatus(numberOfPages);
 }
 
-
 function checkSwitchStatus(numberOfPages) {
-    
-   if (switchStatus === true) {
+
+  if (switchStatus === true) {
     if (numberOfPages > 1) {
       observer.observe(document.querySelector(".load-more__box"));
-     }
-     if (page === numberOfPages) {
-      switchBtnBox.classList.replace("switch-btn__box","is-hidden");
-     }
+    }
+    if (page === numberOfPages) {
+      switchBtnBox.classList.replace("switch-btn__box", "is-hidden");
+    }
   } else if (switchStatus === false) {
     if (numberOfPages > 1) {
       loadMore.removeAttribute("hidden")
     }
-    if (page === numberOfPages) { 
+    if (page === numberOfPages) {
       loadMore.setAttribute("hidden", "")
-      switchBtnBox.classList.replace("switch-btn__box","is-hidden");
+      switchBtnBox.classList.replace("switch-btn__box", "is-hidden");
     }
   }
 }
@@ -91,10 +91,10 @@ function endObserverToggle(numberOfPages) {
   if (numberOfPages > 1) {
     endObserver.unobserve(document.querySelector(".load-more__box"));
   }
-  
+
   if (page === numberOfPages) {
     endObserver.observe(document.querySelector(".load-more__box"));
-  } 
+  }
 }
 
 function renderImage(hits) {
@@ -132,22 +132,22 @@ let observer = new IntersectionObserver(([entry]) => {
     Notify.failure("Please write what you are looking for.")
     return;
   }
-  
+
   if (!entry.isIntersecting) return;
-    page += 1;   
-    getImages(searchQ);   
-  }) 
+  page += 1;
+  getImages(searchQ);
+})
 
 
 // --- powiadomienie o braku dalszych wyszukiwań dopiero pod koniec scrollowania --- //
 
 let endObserver = new IntersectionObserver(([entry]) => {
   if (entry.isIntersecting) {
-      Notify.failure("We're sorry, but you've reached the end of search results.")
+    Notify.failure("We're sorry, but you've reached the end of search results.")
   } else {
     return;
-    }
-}) 
+  }
+})
 
 // --- przycisk załaduj więcej --- //
 
@@ -180,5 +180,24 @@ function generalInfiniteScroll() {
       loadMore.removeAttribute("hidden")
     }
   }
-  console.log("After click",switchStatus)
 }
+
+
+// --- Scroll to the top --- //
+
+
+function scrollToTop() {
+  rootElement.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+scrollToTheTopBtn.addEventListener("click", scrollToTop);
+
+window.addEventListener("scroll", () => {
+  if (window.pageYOffset > 100) {
+    scrollToTheTopBtn.classList.add("showBtn");
+  } else {
+    scrollToTheTopBtn.classList.remove("showBtn");
+  }
+});
