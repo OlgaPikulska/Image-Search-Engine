@@ -203,7 +203,7 @@ body {
 
 .header_with_results {
   z-index: 10;
-  max-height: 165px;
+  max-height: 175px;
 }
 @media screen and (min-width: 768px) {
   .header_with_results {
@@ -269,6 +269,7 @@ body {
   display: -ms-flexbox;
   display: flex;
   margin-top: 10px;
+  margin-bottom: 10px;
 }
 @media screen and (min-width: 768px) {
   .header_with_results .switch-btn__box {
@@ -282,7 +283,7 @@ body {
 }
 
 .gallery {
-  padding-top: 175px;
+  padding-top: 195px;
   display: grid;
   max-width: 1280px;
   grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));

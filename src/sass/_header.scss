@@ -52,7 +52,7 @@
 
 .header_with_results {
   z-index: 10;
-  max-height: 165px;
+  max-height: 175px;
   @media screen and (min-width: 768px) {
     max-height: 170px;
   }
@@ -92,6 +92,7 @@
   .switch-btn__box {
     display: flex;
     margin-top: 10px;
+    margin-bottom: 10px;
     @media screen and (min-width: 768px) {
       margin-top: 40px;
     }
