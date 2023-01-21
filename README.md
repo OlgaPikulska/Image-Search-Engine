@@ -10,7 +10,7 @@ https://olgapikulska.github.io/Image-Search-Engine/
 
 ## General info
 This is a search engine for images. Users can search them based on phrases entered. Clicking on an image can enlarge it and allow swiping between results by clicking arrows. 
-First search gives only 40 results. To get more than that user can decide between clicking the "Load more" button or turning on an "Infinite Scroll" mode. There is also a scroll-to-the-top button in down-right corner. 
+First search gives only 40 results. To get more than that user can decide between clicking the "Load more" button or turning on an "Infinite Scroll" mode. There is also a scroll-to-the-top button in down-right corner. I came up with the design of this page myself.
 
 Working on this application helped me to learn about HTTP Protocol, HTTP methods and requests, async/await syntax and IntersectionObserver. In the future, I would like to add dark mode and opportunity for an immediate searching without using any buttons or keys.
 
