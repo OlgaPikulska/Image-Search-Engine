@@ -7,11 +7,13 @@ const searchInput = document.querySelector("input");
 const searchForm = document.querySelector("#search-form")
 const gallery = document.querySelector(".gallery");
 const loadMore = document.querySelector(".load-more");
-const switchBtn = document.querySelector("#switch");
+const switchBtn = document.querySelector("#toggle");
 const switchBtnBox = document.querySelector(".switch-btn__box")
 const scrollToTheTopBtn = document.querySelector(".scroll-to-the-top")
 const rootElement = document.documentElement;
 let page = 1;
+
+const header = document.querySelector("header");
 
 searchForm.addEventListener("submit", handleSubmit);
 
@@ -98,6 +100,7 @@ function endObserverToggle(numberOfPages) {
 }
 
 function renderImage(hits) {
+  header.classList.add("header_with_results")
   const markup = hits.map((hit) => {
     const markupText = `<div class="photo-card">
     <a class="photo-card__link" href=${hit.largeImageURL}><img src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy" class="photo-card__img"/></a>

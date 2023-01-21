@@ -4,38 +4,66 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Image search engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./css/index.min.css" />
     <script type="module" src="./index.js"></script>
   </head>
   <body>
-    <form class="search-form" id="search-form">
-      <div class="search-form__box">
-        <input
-          type="text"
-          name="searchQuery"
-          autocomplete="off"
-          placeholder="Search images..."
-          class="search-form__input"
-        />
-        <button type="submit" class="search-form__button">
-          <svg class="search-form__button--icon">
-            <use href="images/symbol-defs.svg#icon-search"></use>
-          </svg>
-        </button>
+    <header class="header__initial">
+      <div class="container">
+        <div class="header__box">
+          <h1 class="header__title">Find the perfect<span>Image</span></h1>
+          <form class="search-form" id="search-form">
+            <div class="search-form__box">
+              <input
+                type="text"
+                name="searchQuery"
+                autocomplete="off"
+                placeholder="Search images..."
+                class="search-form__input"
+              />
+              <button type="submit" class="search-form__button">
+                <svg class="search-form__button--icon">
+                  <use href="images/symbol-defs.svg#icon-search"></use>
+                </svg>
+              </button>
+            </div>
+          </form>
+          <div class="switch-btn__box">
+            <p class="switch-btn__txt">Infinite Scroll mode is</p>
+            <input
+              id="toggle"
+              class="toggle"
+              type="checkbox"
+              role="switch"
+              name="toggle"
+              value="off"
+            />
+            <label for="toggle" class="slot">
+              <span class="slot__label">OFF</span>
+              <span class="slot__label">ON</span>
+            </label>
+          </div>
+        </div>
       </div>
-      <div class="switch-btn__box">
-        <p class="switch-btn__txt">Infinite Scroll</p>
-        <input type="checkbox" id="switch" /><label for="switch"></label>
+    </header>
+    <main>
+      <div class="container">
+        <div class="gallery"></div>
+        <div class="load-more__box">
+          <button type="button" class="load-more" hidden>Load more</button>
+          <button type="button" class="scroll-to-the-top">
+            <svg class="scroll-to-the-top--icon">
+              <use href="images/arrows.svg#icon-arrow-up2"></use>
+            </svg>
+          </button>
+        </div>
       </div>
-    </form>
-    <div class="gallery"></div>
-    <div class="load-more__box">
-      <button type="button" class="load-more" hidden>Load more</button>
-      <button type="button" class="scroll-to-the-top">
-        <svg class="scroll-to-the-top--icon">
-          <use href="images/arrows.svg#icon-arrow-up2"></use>
-        </svg>
-      </button>
-    </div>
+    </main>
   </body>
 </html>
