@@ -103,12 +103,14 @@ body {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 10px;
+  height: 45px;
 }
 @media screen and (min-width: 768px) {
   .search-form__input {
     padding-top: 15px;
     padding-bottom: 15px;
     padding-left: 15px;
+    height: 55px;
   }
 }
 .search-form__button {
